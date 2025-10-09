@@ -1,25 +1,25 @@
-import {createSlice} from '@reduxjs/toolkit'
-import {io} from 'socket.io-client'
+import { createSlice } from '@reduxjs/toolkit'
+import { io } from 'socket.io-client'
 
 const initialState = {
-    socket : null,
-    connected: false
+    socket: null,
+    connected: false,
 }
 
 const socketSlice = createSlice({
-    name: "socket",
+    name: 'socket',
     initialState,
     reducers: {
-        connectSocket: (state)=>{
+        connectSocket: state => {
             state.socket = io(import.meta.env.VITE_SIGNAL_SERVER)
-            if(state.socket){
-                state.connected = true;
+            if (state.socket) {
+                state.connected = true
             }
         },
-        call: (state,action)=>{
-            state.socket.emit(action.payload.event,action.payload.data)
+        call: (state, action) => {
+            state.socket.emit(action.payload.event, action.payload.data)
         },
-    }
+    },
 })
 
-export default socketSlice.actions;
+export default socketSlice.actions

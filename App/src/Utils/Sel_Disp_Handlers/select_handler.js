@@ -1,4 +1,4 @@
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 export const useUser = () => {
-    return useSelector((state)=>state.user);
-}   
+    return useSelector(state => state.user)
+}

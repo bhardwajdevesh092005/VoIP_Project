@@ -1,24 +1,34 @@
 import KeyPad from './KeyPad'
 const VoipCalling = () => {
-  return (
-    <div className="h-full w-screen bg-white font-sans">
-      <section className="flex flex-col md:flex-row items-center justify-between px-10 py-20 relative overflow-hidden">
-        <div className="max-w-xl space-y-6 z-10 w-2/3">
-          <img className='rounded-lg' src="/Logo.png" alt="Logo" />
-          <h1 className="text-5xl text-center font-bold text-gray-900">VoIP Calling</h1>
-          <p className="text-lg text-gray-600 text-center">Make crystal-clear voice calls over the internet.</p>
-          <div className="flex space-x-4 justify-center">
-            <button className="bg-indigo-500 text-white px-6 py-3 rounded-full text-lg hover:bg-indigo-600 transition">Get Started</button>
-            <button className="border-2 border-gray-700 text-gray-800 px-6 py-3 rounded-full text-lg hover:bg-gray-100 transition">Try Now</button>
-          </div>
+    return (
+        <div className="h-full w-screen bg-white font-sans">
+            <section className="flex flex-col md:flex-row items-center justify-between px-10 py-20 relative overflow-hidden">
+                <div className="max-w-xl space-y-6 z-10 w-2/3">
+                    <img className="rounded-lg" src="/Logo.png" alt="Logo" />
+                    <h1 className="text-5xl text-center font-bold text-gray-900">VoIP Calling</h1>
+                    <p className="text-lg text-gray-600 text-center">
+                        Make crystal-clear voice calls over the internet.
+                    </p>
+                    <div className="flex space-x-4 justify-center">
+                        <button className="bg-indigo-500 text-white px-6 py-3 rounded-full text-lg hover:bg-indigo-600 transition">
+                            Get Started
+                        </button>
+                        <button className="border-2 border-gray-700 text-gray-800 px-6 py-3 rounded-full text-lg hover:bg-gray-100 transition">
+                            Try Now
+                        </button>
+                    </div>
+                </div>
+                <div className="relative z-10 flex justify-center w-full">
+                    <KeyPad />
+                </div>
+                <img
+                    src="/Hero1.png"
+                    alt="Hero"
+                    className="rounded-xl absolute scale-[0.60] right-0 bottom-0 opacity-50 pointer-events-none select-none"
+                />
+            </section>
         </div>
-        <div className="relative z-10 flex justify-center w-full">
-          <KeyPad />
-        </div>
-        <img src="/Hero1.png" alt="Hero" className="rounded-xl absolute scale-[0.60] right-0 bottom-0 opacity-50 pointer-events-none select-none" />
-      </section>
-    </div>
-  );
-};
+    )
+}
 
-export default VoipCalling;
+export default VoipCalling
