@@ -1,16 +1,43 @@
-version: "3.9"
 services:
   postgres:
     image: postgres:16
     container_name: voip_postgres
     restart: always
     environment:
-      POSTGRES_USER=${POSTGRES_USER}
-      POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      POSTGRES_DB=${POSTGRES_DB} 
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB} 
     volumes: 
-      - postgres_data:/var/lib/postgresql/data:rw
+      - ./data/postgres_data:/var/lib/postgresql/data:rw
     ports:
       - "5432:5432"
     networks:
-      - voip_docker_network  
+      - voip_docker_network
+    
+  mongo:
+    image: mongo:7
+    container_name: voip_mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo:/data/db
+    networks:
+      - voip_docker_network
+    
+  redis:
+    image: redis:7
+    container_name: voip_redis_data
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - voip_docker_network
+networks:
+  voip_docker_network:
+    driver: bridge
