@@ -7,3 +7,17 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 })
+
+const uploadOnCloudinary = async (localFilePath)=>{
+    try {
+        if(!localFilePath)return null;
+        await cloudinary.uploader.upload(localFilePath,{
+            resource_type: "auto",
+        })
+        fs.unlinkSync(localFilePath);
+    } catch (error) {
+        console.log("Unable to upload file on clodinary:",error.message);
+        fs.unlinkSync(localFilePath);
+    }
+}
+export {uploadOnCloudinary};

@@ -7,4 +7,23 @@ generator client{
     provider = "prisma-client-js"
 }
 
-    
+model User{
+    userID Int @id @default(autoincrement())
+    fullName String 
+    email String
+    password String? @default("")
+    profile String?
+    sentRequests ContactRequest[] @relation("SentRequests")
+    recievedRequests ContactRequest[] @relation("RecievedRequests")
+} 
+
+model ContactRequest{
+    requestId Int @id @default(autoincrement())
+    senderId Int 
+    recieverId Int
+    fromUser User @relation("SentRequests",fields: [senderId], references: [userID])
+    toUser User @relation("RecievedRequests",fields: [recieverId], references: [userID])
+    status Int
+    createdOn DateTime @default(now())
+}       
+

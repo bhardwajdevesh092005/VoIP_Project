@@ -12,7 +12,8 @@
     "prisma:studio": "npx prisma studio",
     "prisma:db:pull": "npx prisma db pull",
     "prisma:db:push": "npx prisma db push",
-    "prisma:format": "npx prisma format"
+    "prisma:format": "npx prisma format",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",

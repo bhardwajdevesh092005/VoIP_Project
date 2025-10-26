@@ -18,4 +18,4 @@ class dbService{
         await this.redisService.disconnectRedis();
     }
 }
-export default dbService;
+export default database = new dbService();
