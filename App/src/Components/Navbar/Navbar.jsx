@@ -1,11 +1,10 @@
 import { Link } from 'react-router'
 import { logout } from '../../Redux_Store/Slices/userSlice.js'
-import { useDispatch } from 'react-redux'
-import { useUser } from '../../Utils/Sel_Disp_Handlers/select_handler'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 const Navbar = () => {
     const disp = useDispatch()
-    const isAuthenticated = useUser().isAuth
+    const isAuthenticated = useSelector(state=>state.user.isAuth);
 
     const useLogout = () => {
         disp(logout())

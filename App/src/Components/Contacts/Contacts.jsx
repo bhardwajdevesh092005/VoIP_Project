@@ -1,12 +1,11 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { useUser } from '../../Utils/Sel_Disp_Handlers/select_handler'
 import ContactCard from './Contact_Card'
 import ContactRequestCard from './Contact_Request_Card'
+import { useSelector } from 'react-redux'
 const Contacts = () => {
     const navigate = useNavigate()
-    const isAuthenticated = useUser().isAuth
-
+    const isAuthenticated = useSelector(state=>state.user.isAuth)
     const contacts = [
         { name: 'Devesh Bhardwaj', phone: '+918368424747' },
         { name: 'John Doe', phone: '+919876543210' },

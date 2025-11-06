@@ -2,10 +2,10 @@ import { useState } from 'react'
 import CallHistoryModal from './Call_History'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { useUser } from '../../Utils/Sel_Disp_Handlers/select_handler'
+import { useSelector } from 'react-redux'
 const Profile = () => {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false)
-    const isAuthenticated = useUser().isAuth
+    const isAuthenticated = useSelector(state=>state.user.isAuth);
     const navigate = useNavigate()
     const user = {
         name: 'Devesh Bhardwaj',

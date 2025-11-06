@@ -10,13 +10,17 @@ const socketSlice = createSlice({
     name: 'socket',
     initialState,
     reducers: {
-        connectSocket: state => {
-            state.socket = io(import.meta.env.VITE_SIGNAL_SERVER)
+        connectSocket: (state) => {
+            try {
+                state.socket = io(import.meta.env.VITE_SIGNAL_SERVER)
+            } catch (error) {
+                console.log("Could Not Connect to socket",error.message);
+            }
             if (state.socket) {
                 state.connected = true
             }
         },
-        call: (state, action) => {
+        emit: (state, action) => {
             state.socket.emit(action.payload.event, action.payload.data)
         },
     },
