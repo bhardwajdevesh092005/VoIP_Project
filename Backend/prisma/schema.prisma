@@ -10,11 +10,17 @@ generator client{
 model User{
     userID Int @id @default(autoincrement())
     fullName String 
-    email String
+    email String @unique
     password String? @default("")
-    profile String?
+    refreshToken String?
+    profilePicture String?
     sentRequests ContactRequest[] @relation("SentRequests")
     recievedRequests ContactRequest[] @relation("RecievedRequests")
+    isGoogleAuth Boolean
+    isEmailAuth Boolean
+    callHistory call[] 
+    updatedAt DateTime @updatedAt
+    ceatedAt DateTime @default(now())
 } 
 
 model ContactRequest{
@@ -27,3 +33,10 @@ model ContactRequest{
     createdOn DateTime @default(now())
 }       
 
+model call{
+    callId Int @id @default(autoincrement())
+    users User[]
+    duration Int
+    startTime DateTime
+    endTime DateTime
+}

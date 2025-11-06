@@ -6,6 +6,7 @@ class dbService{
         this.prismaService = new PrismaService();
         this.mongoService = new MongoDbService();
         this.redisService = new RedisService();
+        this.connectDb();
     }
     async connectDb(){
         await this.prismaService.connectPostgres();
@@ -18,4 +19,5 @@ class dbService{
         await this.redisService.disconnectRedis();
     }
 }
-export default database = new dbService();
+const database = new dbService();
+export default database

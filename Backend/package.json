@@ -29,6 +29,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",
     "multer": "^2.0.2",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "prettier": "^3.6.2",
     "redis": "^5.9.0"
   },

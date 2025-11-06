@@ -11,10 +11,11 @@ cloudinary.config({
 const uploadOnCloudinary = async (localFilePath)=>{
     try {
         if(!localFilePath)return null;
-        await cloudinary.uploader.upload(localFilePath,{
+        const uri = await cloudinary.uploader.upload(localFilePath,{
             resource_type: "auto",
-        })
+        });
         fs.unlinkSync(localFilePath);
+        return uri.url;
     } catch (error) {
         console.log("Unable to upload file on clodinary:",error.message);
         fs.unlinkSync(localFilePath);

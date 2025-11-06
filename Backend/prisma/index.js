@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 class PrismaService{
     constructor(){
         this.prismaClientObject = new PrismaClient({
-            log: ["query","error","info","warn"]
+            log: ["error","info","warn"]
         });
     }
     connectPostgres = async ()=>{
