@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {upload} from '../middlewares/multer.middleware.js'
-import { loginUser, registerUser } from '../controllers/userController/index.js';
+import { loginUser, registerUser, sendOtp, OtpLogin} from '../controllers/userController/index.js';
 const userRoutes = Router();
 
 userRoutes.post("/register",
@@ -14,5 +14,11 @@ userRoutes.post("/register",
 )
 userRoutes.post("/login",
     loginUser
+)
+userRoutes.post("/getOTP",
+    sendOtp
+)
+userRoutes.post("/otpLogin",
+    OtpLogin
 )
 export {userRoutes};

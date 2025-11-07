@@ -40,3 +40,10 @@ model call{
     startTime DateTime
     endTime DateTime
 }
+
+model otp{
+    email String @unique
+    otp Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
