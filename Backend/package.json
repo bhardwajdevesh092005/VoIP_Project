@@ -13,7 +13,7 @@
     "prisma:db:pull": "npx prisma db pull",
     "prisma:db:push": "npx prisma db push",
     "prisma:format": "npx prisma format",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "author": "",
   "license": "ISC",
@@ -27,7 +27,9 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "husky": "^9.1.7",
     "jsonwebtoken": "^9.0.2",
+    "lint-staged": "^16.2.6",
     "mongoose": "^8.19.2",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.10",
@@ -40,5 +42,8 @@
   "devDependencies": {
     "nodemon": "^3.1.10",
     "prisma": "^6.18.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   }
 }
