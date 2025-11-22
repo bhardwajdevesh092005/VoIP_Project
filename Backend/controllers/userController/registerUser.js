@@ -6,7 +6,6 @@ import fs from "fs";
 import bcrypt from "bcrypt";
 export const registerUser = async (req, res) => {
     const {fullName, email, password, otp} = req.body;
-    console.log(req.body);
     const avPath = req.files?.avatar?.[0]?.path;
     if (!avPath) {
         throw new ApiError("Please provide Avatar Image");
@@ -65,7 +64,6 @@ export const registerUser = async (req, res) => {
                 profilePicture: true,
             },
         });
-    console.log(resp);
     return res
         .status(201)
         .json(new ApiResponse(201, "User Created Successfully", resp));

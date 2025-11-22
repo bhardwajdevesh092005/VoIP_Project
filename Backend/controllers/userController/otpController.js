@@ -5,7 +5,6 @@ import database from "../../db/dbService.js";
 import {asyncHandler} from "../../Utils/asyncHandler.js";
 const sendOtp = asyncHandler(async (req, res) => {
     const {email} = req.body;
-    console.log(req.body);
     if (!email) {
         throw new ApiError(400, "Provide Email Address");
     }
@@ -16,7 +15,6 @@ const sendOtp = asyncHandler(async (req, res) => {
     //     throw new ApiError(429,"Try asking for OTP after 5 minutes");
     // }
     const otpToSend = Math.floor(100000 * Math.random());
-    console.log(otpToSend);
     const resp = await sendEmail(
         email,
         `
@@ -41,7 +39,6 @@ const sendOtp = asyncHandler(async (req, res) => {
         </div>
     `
     );
-    console.log(resp);
     const acc = await database.prismaService.prismaClientObject.otp.findUnique({
         where: {
             email: email,

@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - voip_docker_network
+      - network
   pgadmin:
     image: dpage/pgadmin4
     container_name: pg_admin
@@ -25,7 +25,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - voip_docker_network
+      - network
   mongo:
     image: mongo:7
     container_name: voip_mongo
@@ -38,7 +38,7 @@ services:
     volumes:
       - ./data/mongo:/data/db
     networks:
-      - voip_docker_network
+      - network
     
   redis:
     image: redis:7
@@ -49,7 +49,7 @@ services:
     volumes:
       - ./data/redis:/data
     networks:
-      - voip_docker_network
+      - network
 networks:
-  voip_docker_network:
+  network:
     driver: bridge

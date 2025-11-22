@@ -1,20 +1,23 @@
 const ContactRequestCard = ({ name, phone, onAccept, onReject }) => {
     return (
-        <li className="p-4 border border-gray-200 rounded-lg flex items-center justify-between hover:shadow-md transition">
-            <div>
-                <p className="text-lg font-medium text-gray-900">{name}</p>
-                <p className="text-sm text-gray-500">{phone}</p>
+        <li className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 dark:bg-dark-700/50 border border-gray-200 dark:border-dark-600 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-700 hover:shadow-md transition-all duration-200 space-y-3 sm:space-y-0">
+            <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-secondary-600 dark:bg-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
+                    {name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">{name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{phone}</p>
+                </div>
             </div>
-            <div className="flex gap-3">
-                {/* Accept Button */}
+            <div className="flex gap-3 w-full sm:w-auto">
                 <button
                     onClick={onAccept}
-                    className="flex items-center gap-1 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-accent-600 hover:bg-accent-700 dark:bg-accent-500 dark:hover:bg-accent-600 text-white px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                 >
-                    {/* Tick icon */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
+                        className="w-5 h-5"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -29,15 +32,13 @@ const ContactRequestCard = ({ name, phone, onAccept, onReject }) => {
                     Accept
                 </button>
 
-                {/* Reject Button */}
                 <button
                     onClick={onReject}
-                    className="flex items-center gap-1 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                 >
-                    {/* Cross icon */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
+                        className="w-5 h-5"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
