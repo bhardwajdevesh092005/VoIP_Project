@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import {userRoutes} from "./routes/user.routes.js";
+import { contactRoutes } from "./routes/contact.routes.js";
 import session from 'express-session'
 import passport from "./services/passport.service.js";
 const app = express();
@@ -32,4 +33,5 @@ app.get("/", (req, res) => {
     return res.send("Hello world");
 });
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/contact", contactRoutes)
 export default app;

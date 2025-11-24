@@ -1,5 +1,8 @@
 import {Router} from "express";
 import {upload} from "../middlewares/multer.middleware.js";
+
+import passport from "../services/passport.service.js";
+import { refreshTokens } from "../controllers/userController/refreshTokens.js";
 import {
     loginUser,
     registerUser,
@@ -7,7 +10,6 @@ import {
     OtpLogin,
     googleAuthCallBack,
 } from "../controllers/userController/index.js";
-import passport from "../services/passport.service.js";
 const userRoutes = Router();
 
 userRoutes.post(
@@ -30,4 +32,5 @@ userRoutes.get("/googleCallBack",
     passport.authenticate("google", {failureRedirect: "/login"}),
     googleAuthCallBack
 )
+userRoutes.get("refreshToken", refreshTokens)
 export {userRoutes};

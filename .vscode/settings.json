@@ -8,5 +8,6 @@
         "plaintext": false,
         "markdown": false,
         "scminput": false
-    }
+    },
+    "prisma.pinToPrisma6": true
 }
