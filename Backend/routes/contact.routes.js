@@ -1,9 +1,10 @@
 import { Router } from "express";
 import {verifyJwt} from '../middlewares/auth.middleware.js';
-import {
-    createRequest,
+import { Controllers } from "#controllers";
 
-} from '../controllers/contactController/index.js'
 const contactRoutes = Router();
-contactRoutes.post("/sendRequest", verifyJwt, createRequest);
+const contactControllers = Controllers.contactControllers;
+contactRoutes.post("/sendRequest", verifyJwt, contactControllers.createRequest);
+contactRoutes.post("/decideRequest",verifyJwt, contactControllers.acceptRequest);
+contactRoutes.get("/getContacts", verifyJwt, contactControllers.getContacts)
 export {contactRoutes};
