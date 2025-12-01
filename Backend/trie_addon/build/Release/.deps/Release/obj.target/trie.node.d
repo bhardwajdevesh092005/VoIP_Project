@@ -1,0 +1,1 @@
+cmd_Release/obj.target/trie.node := g++ -o Release/obj.target/trie.node -shared -pthread -rdynamic -m64  -Wl,-soname=trie.node -Wl,--start-group Release/obj.target/trie/trie/addon.o Release/obj.target/trie/trie/trie.o Release/obj.target/../node_modules/node-addon-api/nothing.a -Wl,--end-group 

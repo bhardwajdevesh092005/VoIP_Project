@@ -3,6 +3,12 @@
     "version": "1.0.0",
     "main": "index.js",
     "type": "module",
+    "exports": {
+        "./trie": {
+            "require": "./build/Release/trie.node",
+            "import": "./build/Release/trie.node"
+        }
+    },
     "imports": {
         "#controllers": "./controllers/index.js"
     },
@@ -44,6 +50,7 @@
         "resend": "^6.4.2"
     },
     "devDependencies": {
+        "node-gyp": "^12.1.0",
         "nodemon": "^3.1.10",
         "prisma": "^6.18.0"
     },
