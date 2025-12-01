@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {upload} from "../middlewares/multer.middleware.js";
-
+import {verifyJwt} from "../middlewares/auth.middleware.js";
 import passport from "../services/passport.service.js";
 import {Controllers} from "#controllers";
 const userRoutes = Router();
@@ -27,4 +27,5 @@ userRoutes.get("/googleCallBack",
     userControllers.googleAuthCallBack
 )
 userRoutes.get("/refreshToken", userControllers.refreshTokens)
+userRoutes.get("/search", userControllers.searchUsers)
 export {userRoutes};

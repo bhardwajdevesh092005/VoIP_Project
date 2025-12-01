@@ -34,8 +34,8 @@ class TrieService {
       let count = 0;
       for (const user of users) {
         // Insert by name
-        if (user.name) {
-          this.contactTrie.insert(user.name.toLowerCase(), user.userID.toString());
+        if (user.fullName) {
+          this.contactTrie.insert(user.fullName.toLowerCase(), user.userID.toString());
           count++;
         }
         
