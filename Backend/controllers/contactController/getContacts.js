@@ -15,8 +15,26 @@ export const getContacts = asyncHandler(async (req,res)=>{
                     ]
                 }
             ]
+        },
+        include: {
+            fromUser: {
+                select: {
+                    userID: true,
+                    fullName: true,
+                    email: true,
+                    profilePicture: true
+                }
+            },
+            toUser: {
+                select: {
+                    userID: true,
+                    fullName: true,
+                    email: true,
+                    profilePicture: true
+                }
+            }
         }
     });
 
-    return res.status(200).json(new ApiResponse(200,"Success",resp));
+    return res.status(200).json(new ApiResponse(200,"Contacts Retrieved Successfully",resp));
 })
