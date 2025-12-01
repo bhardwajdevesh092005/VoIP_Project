@@ -13,6 +13,7 @@ import SignUp from './Components/Login_SignUp/SignUp.jsx'
 import store from './Redux_Store/store.js'
 import { Provider } from 'react-redux'
 import Contacts from './Components/Contacts/Contacts.jsx'
+import AddContact from './Components/Contacts/AddContact.jsx'
 import Profile from './Components/Profile/Profile.jsx'
 import CallScreen from './Components/Calling/CallScreen.jsx'
 const router = createBrowserRouter(
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
             <Route path="login" element={<LoginForm />} />
             <Route path="sign-up" element={<SignUp />} />
             <Route path="contacts" element={<Contacts />} />
+            <Route path="contacts/add" element={<AddContact />} />
             <Route path="profile" element={<Profile />} />
             <Route path="call" element={<CallScreen />} />
         </Route>

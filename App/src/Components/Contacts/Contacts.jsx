@@ -55,7 +55,10 @@ const Contacts = () => {
                             Your Contacts
                         </h1>
                     </div>
-                    <button className="btn-primary text-sm md:text-base">
+                    <button 
+                        className="btn-primary text-sm md:text-base"
+                        onClick={() => navigate('/contacts/add')}
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="w-5 h-5 inline-block mr-2"
