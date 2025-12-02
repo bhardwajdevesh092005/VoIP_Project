@@ -4,6 +4,7 @@ import {ApiResponse} from "../../Utils/apiResponse.js";
 import {uploadOnCloudinary} from "../../services/cloudinary.service.js";
 import fs from "fs";
 import bcrypt from "bcrypt";
+import trieSerivice  from "../../services/search.service.js";
 export const registerUser = async (req, res) => {
     const {fullName, email, password, otp} = req.body;
     const avPath = req.files?.avatar?.[0]?.path;
@@ -64,7 +65,8 @@ export const registerUser = async (req, res) => {
                 profilePicture: true,
             },
         });
+    trieSerivice.addUser(resp.userID, resp.fullName, resp.email);
     return res
         .status(201)
         .json(new ApiResponse(201, "User Created Successfully", resp));
-};
+};  
