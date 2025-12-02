@@ -5,7 +5,6 @@ class TrieService {
   constructor() {
     this.contactTrie = null;
     this.initialized = false;
-    this.initialize();
   }
 
   /**
