@@ -1,6 +1,6 @@
 import {Server} from "socket.io";
-import { authenticateSocket } from "./sock_auth.js";
-import { add_event_lsitener } from "./EventListeners/AddEventListener.js";
+import {authenticateSocket} from "./Auth/authenticateSocket.js";
+import { handle_connection } from './handle_connection.js'
 let io = null;
 const initServer = (httpServer) => {
     if (!httpServer) {
@@ -13,7 +13,8 @@ const initServer = (httpServer) => {
         }
     });
     io.use(authenticateSocket);
-    add_event_lsitener(io);
+    io.on("connection", (socket)=>handle_connection(socket));
     console.log("WebRTC Server initialized");
+    return io;
 };
-export {io, initServer};
+export { initServer };

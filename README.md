@@ -1,43 +1,78 @@
-# 📞 VoIP Connect - Real-Time Voice Communication Platform
+<div align="center">
+
+# VoIP Connect
+
+### Real-Time Voice Communication Platform
+
+[![GitHub](https://img.shields.io/badge/GitHub-VoIP_Project-blue?logo=github)](https://github.com/bhardwajdevesh092005/VoIP_Project)
+[![Node.js](https://img.shields.io/badge/Node.js-v18+-green?logo=node.js)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://reactjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)](https://www.postgresql.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A modern, full-stack VoIP (Voice over Internet Protocol) application built with React, Node.js, WebRTC, and PostgreSQL. Features include real-time voice calls, contact management, and intelligent user search powered by Trie data structures.
 
+</div>
+
 ---
 
-## 🚀 Features
+## Features
 
-### ✅ Completed Features
-- **User Authentication**
-  - Email/Password registration and login
-  - Google OAuth 2.0 integration
-  - OTP-based passwordless login
-  - JWT-based authentication with token refresh
-  - Secure session management
+### Completed Features
 
-- **Contact Management**
-  - Send/receive contact requests
-  - Accept/reject contact requests
-  - View contacts list
-  - Remove contacts
-  - Real-time contact updates
+<details>
+<summary><b>User Authentication</b></summary>
 
-- **User Search (Trie-Based)**
-  - Lightning-fast O(m) prefix search
-  - Search by name or email
-  - 150ms debounced search
-  - Case-insensitive matching
-  - Auto-complete functionality
+- Email/Password registration and login
+- Google OAuth 2.0 integration
+- OTP-based passwordless login
+- JWT-based authentication with token refresh
+- Secure session management
 
-- **UI/UX**
-  - Dark/Light mode toggle
-  - Responsive design (mobile-first)
-  - Smooth animations and transitions
-  - Modern gradient backgrounds
-  - Toast notifications
+</details>
 
-### 🎨 Tech Stack
+<details>
+<summary><b>Contact Management</b></summary>
 
-#### Frontend
+- Send/receive contact requests
+- Accept/reject contact requests
+- View contacts list
+- Remove contacts
+- Real-time contact updates
+
+</details>
+
+<details>
+<summary><b>User Search (Trie-Based)</b></summary>
+
+- Lightning-fast O(m) prefix search
+- Search by name or email
+- 150ms debounced search
+- Case-insensitive matching
+- Auto-complete functionality
+
+</details>
+
+<details>
+<summary><b>UI/UX</b></summary>
+
+- Dark/Light mode toggle
+- Responsive design (mobile-first)
+- Smooth animations and transitions
+- Modern gradient backgrounds
+- Toast notifications
+
+</details>
+
+---
+
+## Tech Stack
+
+<table>
+<tr>
+<td valign="top" width="33%">
+
+### Frontend
 - **Framework:** React 18 with Vite
 - **State Management:** Redux Toolkit
 - **Routing:** React Router v6
@@ -45,32 +80,37 @@ A modern, full-stack VoIP (Voice over Internet Protocol) application built with 
 - **HTTP Client:** Axios
 - **Build Tool:** Vite
 
-#### Backend
+</td>
+<td valign="top" width="33%">
+
+### Backend
 - **Runtime:** Node.js
 - **Framework:** Express.js
 - **Database:** PostgreSQL (Prisma ORM)
 - **Cache:** Redis
-- **Authentication:** Passport.js (Google OAuth), JWT
+- **Authentication:** Passport.js, JWT
 - **File Upload:** Multer + Cloudinary
 - **Email:** Nodemailer
 - **WebRTC:** Socket.io
 
-#### Data Structures
-- **Search Engine:** C++ Trie (Node.js Native Addon)
-  - Built with N-API and node-addon-api
-  - ~1-2ms search time for any query length
-  - In-memory data structure
+</td>
+<td valign="top" width="33%">
 
-#### DevOps
+### DevOps & Tools
 - **Containerization:** Docker & Docker Compose
 - **Database:** PostgreSQL 16
 - **Cache:** Redis 7
 - **MongoDB:** For future features
-- **Version Control:** Git with Husky pre-commit hooks
+- **Version Control:** Git + Husky
+- **Search Engine:** C++ Trie (Native Addon)
+
+</td>
+</tr>
+</table>
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 VoIP_Project/
@@ -118,21 +158,29 @@ VoIP_Project/
 
 ---
 
-## 🛠️ Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- Docker & Docker Compose
-- Python 3 (for building C++ addon)
-- Git
 
-### 1. Clone Repository
+```bash
+Node.js (v18 or higher)
+Docker & Docker Compose
+Python 3 (for building C++ addon)
+Git
+```
+
+---
+
+### Step 1: Clone Repository
+
 ```bash
 git clone https://github.com/bhardwajdevesh092005/VoIP_Project.git
 cd VoIP_Project
 ```
 
-### 2. Setup Environment Variables
+---
+
+### Step 2: Setup Environment Variables
 
 Create `.env` files in respective directories:
 
@@ -186,18 +234,23 @@ PGADMIN_DEFAULT_PASSWORD=admin
 VITE_API_URL=http://localhost:3000/api/v1
 ```
 
-### 3. Start Docker Services
+---
+
+### Step 3: Start Docker Services
+
 ```bash
 docker-compose up -d
 ```
 
-This will start:
+**Services Started:**
 - PostgreSQL (port 5432)
 - PgAdmin (port 5050)
 - MongoDB (port 27017)
 - Redis (port 6379)
 
-### 4. Setup Backend
+---
+
+### Step 4: Setup Backend
 
 ```bash
 cd Backend
@@ -215,7 +268,9 @@ npx prisma migrate dev
 npm run dev
 ```
 
-### 5. Setup Frontend
+---
+
+### Step 5: Setup Frontend
 
 ```bash
 cd App
@@ -227,40 +282,60 @@ npm install
 npm run dev
 ```
 
-### 6. Access Application
+---
 
-- **Frontend:** http://localhost:5173
-- **Backend API:** http://localhost:3000/api/v1
-- **PgAdmin:** http://localhost:5050
-- **API Documentation:** See `Backend/routes/API_DOCUMENTATION.md`
+### Step 6: Access Application
+
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:5173 |
+| Backend API | http://localhost:3000/api/v1 |
+| PgAdmin | http://localhost:5050 |
+| API Docs | `Backend/routes/API_DOCUMENTATION.md` |
 
 ---
 
-## 📚 API Endpoints
+## API Endpoints
 
-### User Routes
-- `POST /api/v1/user/register` - Register new user
-- `POST /api/v1/user/login` - Login with email/password
-- `POST /api/v1/user/getOTP` - Request OTP
-- `POST /api/v1/user/otpLogin` - Login with OTP
-- `GET /api/v1/user/googleLogin` - Google OAuth login
-- `GET /api/v1/user/googleCallBack` - OAuth callback
-- `GET /api/v1/user/refreshToken` - Refresh access token
-- `GET /api/v1/user/search?query=` - Search users (🔒 Protected)
+<details>
+<summary><b>User Routes</b></summary>
 
-### Contact Routes
-- `POST /api/v1/contact/sendRequest` - Send contact request (🔒)
-- `POST /api/v1/contact/decideRequest` - Accept/reject request (🔒)
-- `GET /api/v1/contact/getContacts` - Get contacts list (🔒)
-- `GET /api/v1/contact/getContactRequests` - Get pending requests (🔒)
-- `DELETE /api/v1/contact/removeContact/:requestId` - Remove contact (🔒)
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/v1/user/register` | Register new user | No |
+| POST | `/api/v1/user/login` | Login with email/password | No |
+| POST | `/api/v1/user/getOTP` | Request OTP | No |
+| POST | `/api/v1/user/otpLogin` | Login with OTP | No |
+| GET | `/api/v1/user/googleLogin` | Google OAuth login | No |
+| GET | `/api/v1/user/googleCallBack` | OAuth callback | No |
+| GET | `/api/v1/user/refreshToken` | Refresh access token | No |
+| GET | `/api/v1/user/search?query=` | Search users | Yes |
+
+</details>
+
+<details>
+<summary><b>Contact Routes</b></summary>
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/v1/contact/sendRequest` | Send contact request | Yes |
+| POST | `/api/v1/contact/decideRequest` | Accept/reject request | Yes |
+| GET | `/api/v1/contact/getContacts` | Get contacts list | Yes |
+| GET | `/api/v1/contact/getContactRequests` | Get pending requests | Yes |
+| DELETE | `/api/v1/contact/removeContact/:requestId` | Remove contact | Yes |
+
+</details>
 
 ---
 
-## 🔧 Key Technologies Explained
+## Key Technologies Explained
 
-### Trie Data Structure (C++ Native Addon)
+<details>
+<summary><b>Trie Data Structure (C++ Native Addon)</b></summary>
+
 The search feature uses a custom-built Trie data structure implemented in C++ for maximum performance:
+
+**Features:**
 - **O(m) search complexity** where m = query length
 - **Case-insensitive** search
 - **Prefix matching** for autocomplete
@@ -272,18 +347,25 @@ The search feature uses a custom-built Trie data structure implemented in C++ fo
 - Efficient memory usage
 - Native performance for high-frequency operations
 
-### WebRTC Architecture
-(To be implemented)
+</details>
+
+<details>
+<summary><b>WebRTC Architecture</b></summary>
+
+_(To be implemented)_
+
 - Peer-to-peer voice connections
 - STUN/TURN servers for NAT traversal
 - Socket.io for signaling
 - ICE candidates exchange
 
+</details>
+
 ---
 
-## 📝 TODO List
+## TODO List
 
-### 🎯 Phase 1: Core Features (In Progress)
+### Phase 1: Core Features (In Progress)
 - ~~[x] User Authentication System~~
   - ~~[x] Email/Password auth~~
   - ~~[x] Google OAuth integration~~
@@ -314,7 +396,7 @@ The search feature uses a custom-built Trie data structure implemented in C++ fo
   - [ ] Call history model (schema exists, needs implementation)
   - [ ] Message model (future)
 
-### 🔊 Phase 2: WebRTC Voice Calling (Next Priority)
+### Phase 2: WebRTC Voice Calling (Next Priority)
 - [ ] WebRTC Setup
   - [ ] Configure STUN/TURN servers
   - [ ] Implement signaling server with Socket.io
@@ -345,7 +427,7 @@ The search feature uses a custom-built Trie data structure implemented in C++ fo
   - [ ] Missed calls indicator
   - [ ] Call back functionality
 
-### 📱 Phase 3: Enhanced Features
+### Phase 3: Enhanced Features
 - [ ] User Profile
   - ~~[x] Basic profile page~~
   - [ ] Edit profile information
@@ -375,7 +457,7 @@ The search feature uses a custom-built Trie data structure implemented in C++ fo
   - [ ] Group call management
   - [ ] Screen sharing (optional)
 
-### 🎨 Phase 4: UI/UX Improvements
+### Phase 4: UI/UX Improvements
 - [ ] Frontend Polish
   - ~~[x] Dark/Light mode~~
   - ~~[x] Responsive design basics~~
@@ -405,7 +487,7 @@ The search feature uses a custom-built Trie data structure implemented in C++ fo
   - [ ] Progressive Web App (PWA)
   - [ ] Better error messages
 
-### 🔐 Phase 5: Security & Testing
+### Phase 5: Security & Testing
 - [ ] Security Enhancements
   - [ ] Rate limiting on APIs
   - [ ] CORS configuration refinement
@@ -430,7 +512,7 @@ The search feature uses a custom-built Trie data structure implemented in C++ fo
   - [ ] Performance monitoring
   - [ ] Error tracking (Sentry)
 
-### 🚀 Phase 6: DevOps & Deployment
+### Phase 6: DevOps & Deployment
 - [ ] CI/CD Pipeline
   - [ ] GitHub Actions workflow
   - [ ] Automated testing
@@ -461,7 +543,7 @@ The search feature uses a custom-built Trie data structure implemented in C++ fo
   - [ ] Contribution guidelines
   - [ ] Architecture diagrams
 
-### 💡 Phase 7: Advanced Features (Future)
+### Phase 7: Advanced Features (Future)
 - [ ] Messaging System
   - [ ] Text messaging
   - [ ] File sharing
@@ -491,60 +573,70 @@ The search feature uses a custom-built Trie data structure implemented in C++ fo
 
 ---
 
-## 🐛 Known Issues
+## Known Issues
 
-1. **Trie Addon Segfault** (Exit Code 139)
-   - Occurs when running `node index.js` in trie_addon folder
-   - Solution: Use CommonJS (`require`) or ensure proper initialization
-   - Status: Fixed in production usage
+> **Note:** These are documented issues currently being addressed.
 
-2. **WebRTC Not Implemented**
-   - Call UI components exist but not connected to WebRTC logic
-   - Needs Socket.io signaling server implementation
-
-3. **Call History Model**
-   - Prisma schema exists but backend implementation pending
+| Issue | Description | Status |
+|-------|-------------|--------|
+| Trie Addon Segfault | Exit Code 139 when running `node index.js` in trie_addon folder | Fixed in production |
+| WebRTC Not Implemented | Call UI exists but not connected to WebRTC logic | In Progress |
+| Call History Model | Prisma schema exists but backend implementation pending | Planned |
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+We welcome contributions! Please follow these steps:
+
+1. **Fork** the repository
+2. Create your feature branch
+   ```bash
+   git checkout -b feature/AmazingFeature
+   ```
+3. Commit your changes
+   ```bash
+   git commit -m 'Add some AmazingFeature'
+   ```
+4. Push to the branch
+   ```bash
+   git push origin feature/AmazingFeature
+   ```
+5. Open a **Pull Request**
 
 ---
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License**.
 
 ---
 
-## 👨‍💻 Author
+
+
+## Author
 
 **Devesh Bhardwaj**
-- GitHub: [@bhardwajdevesh092005](https://github.com/bhardwajdevesh092005)
+
+[![GitHub](https://img.shields.io/badge/GitHub-bhardwajdevesh092005-181717?logo=github)](https://github.com/bhardwajdevesh092005)
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- React & Vite teams for excellent developer experience
-- Prisma for intuitive database management
-- WebRTC community for protocols and documentation
-- Tailwind CSS for rapid UI development
+- **React & Vite** teams for excellent developer experience
+- **Prisma** for intuitive database management
+- **WebRTC** community for protocols and documentation
+- **Tailwind CSS** for rapid UI development
 
 ---
 
-## 📧 Support
+## Support
 
 For issues and questions:
-- Open an issue on GitHub
+- [Open an issue on GitHub](https://github.com/bhardwajdevesh092005/VoIP_Project/issues)
 - Check existing documentation in `/Backend/routes/API_DOCUMENTATION.md`
 
 ---
 
-**Last Updated:** December 2, 2025
+**Last Updated:** December 3, 2025

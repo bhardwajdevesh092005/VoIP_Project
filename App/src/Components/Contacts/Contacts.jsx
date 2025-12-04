@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import ContactCard from './Contact_Card'
 import ContactRequestCard from './Contact_Request_Card'
 import { useSelector } from 'react-redux'
-
+import { io } from 'socket.io-client'
 const Contacts = () => {
     const navigate = useNavigate()
     const isAuthenticated = useSelector(state => state.user.isAuth)
@@ -23,6 +23,14 @@ const Contacts = () => {
         if (!isAuthenticated) {
             navigate('/login')
         }
+        const socket = io(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000', {
+            withCredentials: true,
+        })
+        socket.on('auth:error', (msg) => {
+            console.error('Authentication error:', msg)
+            navigate('/login')
+        })
+        console.log('Socket connected:', socket.connected)
     }, [isAuthenticated, navigate])
 
     const handleCall = name => {

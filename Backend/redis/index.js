@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-class RedisSevice {
+class RedisService {
     constructor() {
         this.redis = new createClient({
             url: process.env.REDIS_URL,
@@ -50,4 +50,4 @@ class RedisSevice {
     };
 }
 
-export default RedisSevice;
+export default RedisService;
