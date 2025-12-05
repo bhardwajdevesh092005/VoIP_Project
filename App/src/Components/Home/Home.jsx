@@ -33,9 +33,6 @@ const VoipCalling = () => {
                             alt="Logo"
                         />
                     </div>
-                    <h1 className="text-4xl md:text-6xl text-center md:text-left font-extrabold text-gray-900 dark:text-white">
-                        VoIP Calling
-                    </h1>
                     <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 text-center md:text-left leading-relaxed">
                         Experience crystal-clear voice calls over the internet with cutting-edge
                         technology.

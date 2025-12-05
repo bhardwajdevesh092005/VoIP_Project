@@ -49,53 +49,31 @@ const CallHistoryModal = ({ isOpen, onClose, history }) => {
 
                 {history.length > 0 ? (
                     <ul className="space-y-3 max-h-96 overflow-y-auto">
-                        {history.map((call, idx) => (
+                        {history.map((call) => (
                             <li
-                                key={idx}
+                                key={call.callId}
                                 className="flex justify-between items-center p-4 bg-gray-50 dark:bg-dark-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors border border-gray-200 dark:border-dark-600"
                             >
-                                <div className="flex items-center space-x-3">
-                                    <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-full">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="w-5 h-5 text-primary-600 dark:text-primary-400"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                            />
-                                        </svg>
-                                    </div>
-                                    <div>
+                                <div className="flex items-center space-x-3 flex-1">
+                                    <img
+                                        src={call.participantAvatar || 'https://cdn-icons-png.flaticon.com/512/206/206853.png'}
+                                        alt={call.participantName}
+                                        className="w-12 h-12 rounded-full object-cover border-2 border-primary-300 dark:border-primary-700"
+                                    />
+                                    <div className="flex-1">
                                         <p className="font-semibold text-gray-800 dark:text-gray-100">
-                                            {call.name}
+                                            {call.participantName || 'Unknown'}
                                         </p>
                                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            {call.time}
+                                            {call.formattedTime}
+                                        </p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                                            {call.formattedDuration}
                                         </p>
                                     </div>
                                 </div>
-                                <button className="p-2 bg-accent-100 dark:bg-accent-900/30 hover:bg-accent-200 dark:hover:bg-accent-800/40 rounded-full transition-colors">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="w-5 h-5 text-accent-600 dark:text-accent-400"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                                        />
-                                    </svg>
-                                </button>
                             </li>
                         ))}
                     </ul>

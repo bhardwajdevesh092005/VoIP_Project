@@ -10,7 +10,6 @@ const createRequest = asyncHandler(async (req,res)=>{
     }
 
     const rec_email = req.body.email;
-    console.log(rec_email);
     if (!rec_email) {
         throw new ApiError(400, "Receiver email is required");
     }

@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { io } from 'socket.io-client'
 
 const initialState = {
     socket: null,
@@ -10,20 +9,28 @@ const socketSlice = createSlice({
     name: 'socket',
     initialState,
     reducers: {
-        connectSocket: (state) => {
-            try {
-                state.socket = io(import.meta.env.VITE_SIGNAL_SERVER)
-            } catch (error) {
-                console.log("Could Not Connect to socket",error.message);
-            }
+        setSocket: (state, action) => {
+            state.socket = action.payload
+        },
+        setConnected: (state, action) => {
+            state.connected = action.payload
+        },
+        disconnectSocket: (state) => {
             if (state.socket) {
-                state.connected = true
+                state.socket.disconnect()
             }
+            state.socket = null
+            state.connected = false
         },
         emit: (state, action) => {
-            state.socket.emit(action.payload.event, action.payload.data)
+            if (state.socket && state.connected) {
+                state.socket.emit(action.payload.event, action.payload.data)
+            } else {
+                console.warn('Cannot emit: Socket not connected')
+            }
         },
     },
 })
 
-export default socketSlice.actions
+export const { setSocket, setConnected, disconnectSocket, emit } = socketSlice.actions
+export default socketSlice.reducer

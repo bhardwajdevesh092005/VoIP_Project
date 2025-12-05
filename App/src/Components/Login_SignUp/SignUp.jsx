@@ -19,8 +19,8 @@ export default function SignUp() {
         <div className="h-full flex flex-col items-center justify-center px-4 py-8">
             <div className="card p-8 md:p-10 w-full max-w-md">
                 <div className="flex flex-col items-center justify-center mb-8">
-                    <div className="w-20 h-20 mb-4">
-                        <img src="/Logo.png" alt="" className="h-20 w-20 object-cover" />
+                    <div className="mb-4">
+                        <img src="/Logo.png" alt="" className="h-[60px] w-[200px] object-cover" />
                     </div>
                     <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
                         Create Account

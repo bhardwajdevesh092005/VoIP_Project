@@ -19,6 +19,7 @@ userRoutes.post(
 userRoutes.post("/login", userControllers.loginUser);
 userRoutes.post("/getOTP", userControllers.sendOtp);
 userRoutes.post("/otpLogin", userControllers.OtpLogin);
+userRoutes.get("/loginStatus", verifyJwt, userControllers.getLoginStatus);
 userRoutes.get("/googleLogin",
     passport.authenticate("google", { scope: ["profile", "email"] })
 )
@@ -28,4 +29,7 @@ userRoutes.get("/googleCallBack",
 )
 userRoutes.get("/refreshToken", userControllers.refreshTokens)
 userRoutes.get("/search", userControllers.searchUsers)
+userRoutes.put("/update", verifyJwt, upload.fields([{ name: "avatar", maxCount: 1 }]), userControllers.updateUser)
+userRoutes.put("/updatePassword", verifyJwt, userControllers.updatePassword)
+userRoutes.post("/logout", verifyJwt, userControllers.logoutUser)
 export {userRoutes};

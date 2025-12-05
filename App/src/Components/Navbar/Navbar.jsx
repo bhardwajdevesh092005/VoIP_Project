@@ -1,16 +1,36 @@
 import { Link } from 'react-router'
 import { logout } from '../../Redux_Store/Slices/userSlice.js'
 import { toggleTheme } from '../../Redux_Store/Slices/themeSlice.js'
+import { disconnectSocket } from '../../Redux_Store/Slices/socketSlice.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
+import { authAPI } from '../../Utils/api.js'
 
 const Navbar = () => {
     const disp = useDispatch()
     const isAuthenticated = useSelector(state => state.user.isAuth)
+    const user = useSelector(state => state.user.user)
     const isDarkMode = useSelector(state => state.theme.isDarkMode)
 
-    const useLogout = () => {
-        disp(logout())
+    const handleLogout = async () => {
+        try {
+            // Call logout API to clear cookies and refresh token in DB
+            await authAPI.logout()
+        } catch (error) {
+            console.error('Logout API error:', error)
+        } finally {
+            // Disconnect socket
+            disp(disconnectSocket())
+            
+            // Remove access token from localStorage
+            localStorage.removeItem('accessToken')
+            
+            // Logout from Redux store
+            disp(logout())
+            
+            // Navigate to login page
+            navigate('/login')
+        }
     }
 
     const handleToggleTheme = () => {
@@ -21,17 +41,14 @@ const Navbar = () => {
 
     return (
         <nav className="glass-effect sticky top-0 z-50 flex text-lg justify-between items-center py-4 px-6 md:px-10 mb-2 shadow-lg">
-            <div className="flex items-center space-x-3">
+            {/* <div className="flex items-center space-x-3"> */}
                 <img
                     src="/Logo.png"
                     alt="Logo"
-                    className="w-12 h-12 cursor-pointer hover:scale-110 transition-transform duration-200"
+                    className="w-[150px] object-fill -mx-3 cursor-pointer hover:scale-110 transition-transform duration-200"
                     onClick={() => navigate('/')}
                 />
-                <span className="text-2xl font-bold text-primary-600 dark:text-primary-400 hidden md:block">
-                    VoIP Connect
-                </span>
-            </div>
+            {/* </div> */}
 
             <div className="flex items-center space-x-4 md:space-x-6">
                 <ul className="flex space-x-6 md:space-x-8 text-gray-700 dark:text-gray-300 font-medium">
@@ -93,9 +110,28 @@ const Navbar = () => {
                 </button>
 
                 {isAuthenticated ? (
-                    <button onClick={useLogout} className="btn-primary text-sm md:text-base">
-                        Logout
-                    </button>
+                    <div className="flex items-center space-x-4">
+                        {/* Profile Button */}
+                        <button
+                            onClick={() => navigate('/profile')}
+                            className="flex items-center space-x-2 p-2 rounded-xl hover:bg-gray-200 dark:hover:bg-dark-700 transition-all duration-200"
+                            aria-label="Profile"
+                        >
+                            <img
+                                src={user?.profilePicture || '/default-avatar.png'}
+                                alt="Profile"
+                                className="w-10 h-10 rounded-full object-cover border-2 border-primary-500"
+                            />
+                            <span className="hidden md:block text-gray-700 dark:text-gray-300 font-medium">
+                                {user?.fullName?.split(" ")[0] || 'User'}
+                            </span>
+                        </button>
+
+                        {/* Logout Button */}
+                        <button onClick={handleLogout} className="btn-primary text-sm md:text-base">
+                            Logout
+                        </button>
+                    </div>
                 ) : (
                     <div className="flex space-x-3">
                         <button className="btn-primary text-sm md:text-base">

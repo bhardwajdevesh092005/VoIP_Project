@@ -47,9 +47,15 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
-        // Refresh failed, redirect to login
+        // Refresh failed, clear token
         localStorage.removeItem('accessToken');
-        window.location.href = '/login';
+        
+        // Only redirect if not already on login/signup page
+        const currentPath = window.location.pathname;
+        if (currentPath !== '/login' && currentPath !== '/sign-up') {
+          window.location.href = '/login';
+        }
+        
         return Promise.reject(refreshError);
       }
     }
@@ -58,4 +64,27 @@ api.interceptors.response.use(
   }
 );
 
+// API endpoints
+export const authAPI = {
+  getLoginStatus: () => api.get('/user/loginStatus'),
+  login: (credentials) => api.post('/user/login', credentials),
+  register: (userData) => api.post('/user/register', userData),
+  logout: () => api.post('/user/logout'),
+  refreshToken: () => api.get('/user/refreshToken'),
+  sendOTP: (email) => api.post('/user/getOTP', { email }),
+  updateUser: (formData) => api.put('/user/update', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  updatePassword: (data) => api.put('/user/updatePassword', data),
+};
+
+export const callAPI = {
+  getCallHistory: () => api.get('/calls/history'),
+};
+
+export const contactAPI = {
+  getContacts: () => api.get('/contact/getContacts'),
+};
+
 export default api;
+

@@ -3,34 +3,17 @@ import { useNavigate } from 'react-router'
 import ContactCard from './Contact_Card'
 import ContactRequestCard from './Contact_Request_Card'
 import { useSelector } from 'react-redux'
-import { io } from 'socket.io-client'
+
 const Contacts = () => {
     const navigate = useNavigate()
     const isAuthenticated = useSelector(state => state.user.isAuth)
-    const contacts = [
-        { name: 'Devesh Bhardwaj', phone: '+918368424747' },
-        { name: 'John Doe', phone: '+919876543210' },
-        { name: 'Jane Smith', phone: '+919876543211' },
-        { name: 'Rahul Sharma', phone: '+919876543212' },
-        { name: 'Priya Patel', phone: '+919876543213' },
-    ]
-    const contactRequests = [
-        { name: 'Aman Verma', phone: '+918765432198' },
-        { name: 'Priya Sharma', phone: '+919887766554' },
-    ]
+    const contacts = []
+    const contactRequests = []
 
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login')
         }
-        const socket = io(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000', {
-            withCredentials: true,
-        })
-        socket.on('auth:error', (msg) => {
-            console.error('Authentication error:', msg)
-            navigate('/login')
-        })
-        console.log('Socket connected:', socket.connected)
     }, [isAuthenticated, navigate])
 
     const handleCall = name => {

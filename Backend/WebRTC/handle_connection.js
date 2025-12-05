@@ -1,5 +1,3 @@
-import { add_event_listener } from "./addEventListener.js";
-import { presenceManager } from './index.js'
 import database from '../db/dbService.js'
 import PresenceService from "../redis/RedisInterface/WebRTC_Redis.js";
 export const handle_connection = (io, socket)=>{

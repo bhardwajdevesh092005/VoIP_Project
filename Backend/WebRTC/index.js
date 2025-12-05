@@ -13,7 +13,9 @@ const initServer = (httpServer) => {
         }
     });
     io.use(authenticateSocket);
-    io.on("connection", (socket)=>handle_connection(socket));
+    io.on("connection", (socket)=>{
+        handle_connection(io,socket)
+    });
     console.log("WebRTC Server initialized");
     return io;
 };

@@ -44,6 +44,7 @@ const loginUser = asyncHandler(async (req, res) => {
                 email: true,
                 userID: true,
                 updatedAt: true,
+                profilePicture: true,
             },
         });
     const options = {
@@ -115,6 +116,7 @@ const OtpLogin = asyncHandler(async (req, res) => {
                 email: true,
                 userID: true,
                 updatedAt: true,
+                profilePicture: true,
             },
         });
     const options = {

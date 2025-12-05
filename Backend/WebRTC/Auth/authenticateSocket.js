@@ -32,7 +32,6 @@ export const authenticateSocket = (socket, next) => {
                 email: payload.email
             }
         });
-        console.log(`Socket authenticated for user ID: ${payload._id}`);
         // If token is valid, proceed to the next middleware
         next(); 
     } catch (error) {

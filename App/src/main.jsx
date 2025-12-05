@@ -16,6 +16,7 @@ import Contacts from './Components/Contacts/Contacts.jsx'
 import AddContact from './Components/Contacts/AddContact.jsx'
 import Profile from './Components/Profile/Profile.jsx'
 import CallScreen from './Components/Calling/CallScreen.jsx'
+
 const router = createBrowserRouter(
     createRoutesFromChildren(
         <Route path="/" element={<App />}>
