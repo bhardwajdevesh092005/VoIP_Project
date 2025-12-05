@@ -23,8 +23,8 @@ const router = createBrowserRouter(
             <Route path="" element={<Home />} />
             <Route path="login" element={<LoginForm />} />
             <Route path="sign-up" element={<SignUp />} />
-            <Route path="contacts" element={<Contacts />} />
-            <Route path="contacts/add" element={<AddContact />} />
+            <Route path="my-contacts" element={<Contacts />} />
+            <Route path="my-contacts/add" element={<AddContact />} />
             <Route path="profile" element={<Profile />} />
             <Route path="call" element={<CallScreen />} />
         </Route>

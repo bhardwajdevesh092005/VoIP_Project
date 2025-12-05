@@ -60,14 +60,26 @@ const Navbar = () => {
                             About
                         </Link>
                     </li>
-                    <li>
-                        <Link
-                            to="/contacts"
-                            className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
-                        >
-                            Contact
-                        </Link>
-                    </li>
+                    {!isAuthenticated && (
+                        <li>
+                            <Link
+                                to="#"
+                                className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                            >
+                                Contact Us
+                            </Link>
+                        </li>
+                    )}
+                    {isAuthenticated && (
+                        <li>
+                            <Link
+                                to="/my-contacts"
+                                className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                            >
+                                My Contacts
+                            </Link>
+                        </li>
+                    )}
                 </ul>
 
                 {/* Dark Mode Toggle */}

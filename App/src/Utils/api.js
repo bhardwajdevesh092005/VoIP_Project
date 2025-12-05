@@ -84,6 +84,9 @@ export const callAPI = {
 
 export const contactAPI = {
   getContacts: () => api.get('/contact/getContacts'),
+  getContactRequests: (type) => api.get('/contact/getContactRequests', { params: { type } }),
+  acceptRequest: (requestId, accept) => api.post('/contact/decideRequest', { requestId, accept }),
+  removeContact: (requestId) => api.delete(`/contact/removeContact/${requestId}`),
 };
 
 export default api;

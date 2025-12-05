@@ -19,7 +19,7 @@ function App() {
     }, [isDarkMode])
 
     return (
-        <div className="flex flex-col h-screen gradient-bg relative">
+        <div className="max-w-full flex flex-col h-screen gradient-bg relative">
             <div className="gradient-orb"></div>
             <Navbar />
             <AuthChecker />
