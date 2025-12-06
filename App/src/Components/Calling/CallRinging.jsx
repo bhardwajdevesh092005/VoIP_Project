@@ -1,9 +1,85 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setCallRequest, resetCallState, setCallingUser, setCallStatus } from '../../Redux_Store/Slices/callSlce.js'
+import { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router'
 
 const CallRinging = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const caller = useSelector(state => state.call.callFrom)
+    const socket = useSelector(state => state.socket.socket)
+    const timeoutRef = useRef(null)
+
+    useEffect(() => {
+        // Set 60-second timeout for incoming call
+        timeoutRef.current = setTimeout(() => {
+            console.log('Call timeout - no answer after 60 seconds')
+            if (socket && caller?.callerId) {
+                socket.emit('call:response', {
+                    callerId: caller.callerId,
+                    accepted: false,
+                    reason: 'No answer'
+                })
+            }
+            dispatch(setCallRequest(false))
+            dispatch(resetCallState())
+        }, 60000) // 60 seconds
+
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [caller, socket, dispatch])
+
+    const handleAccept = () => {
+        console.log('Call accepted from:', caller.callerId)
+        // Clear timeout
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+        // Set caller info in Redux for CallScreen
+        dispatch(setCallingUser({
+            userID: caller.callerId,
+            fullName: caller.name,
+            profilePicture: caller.img
+        }))
+        
+        // Set call status to 'ringing' (connecting state for receiver)
+        dispatch(setCallStatus('ringing'))
+        
+        // TODO: Add WebRTC logic here later
+        // For now, just emit a response event
+        if (socket) {
+            socket.emit('call:response', {
+                callerId: caller.callerId,
+                accepted: true,
+                answer: {} // Will be filled with WebRTC answer later
+            })
+        }
+        dispatch(setCallRequest(false))
+        // Navigate to call screen
+        navigate('/call')
+    }
+
+    const handleReject = () => {
+        console.log('Call rejected from:', caller.callerId)
+        // Clear timeout
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+        }
+        if (socket) {
+            socket.emit('call:response', {
+                callerId: caller.callerId,
+                accepted: false,
+                reason: 'User declined'
+            })
+        }
+        dispatch(setCallRequest(false))
+        dispatch(resetCallState())
+    }
     return (
         <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -14,7 +90,7 @@ const CallRinging = () => {
         >
             <div className="relative">
                 <img
-                    src={caller.img}
+                    src={caller.img || '/default-avatar.png'}
                     alt={caller.name}
                     className="w-16 h-16 rounded-full object-cover border-4 border-primary-500 dark:border-primary-600 shadow-lg"
                 />
@@ -41,13 +117,13 @@ const CallRinging = () => {
                 </p>
                 <div className="flex gap-2 mt-3">
                     <button
-                        // onClick={onAccept}
+                        onClick={handleAccept}
                         className="flex-1 bg-accent-600 hover:bg-accent-700 dark:bg-accent-500 dark:hover:bg-accent-600 text-white px-4 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                     >
                         Accept
                     </button>
                     <button
-                        // onClick={onReject}
+                        onClick={handleReject}
                         className="flex-1 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                     >
                         Reject

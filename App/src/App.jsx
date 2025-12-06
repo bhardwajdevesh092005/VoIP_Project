@@ -6,6 +6,8 @@ import CallRinging from './Components/Calling/CallRinging.jsx'
 import { useEffect } from 'react'
 import SocketManager from './SocketManager.jsx'
 import AuthChecker from './AuthChecker.jsx'
+import ToastContainer from './Components/Toast/ToastContainer.jsx'
+
 function App() {
     const callRinging = useSelector(state => state.call.callRequest)
     const isDarkMode = useSelector(state => state.theme.isDarkMode)
@@ -24,6 +26,7 @@ function App() {
             <Navbar />
             <AuthChecker />
             <SocketManager />
+            <ToastContainer />
             {callRinging && <CallRinging />}
             <Outlet />
         </div>

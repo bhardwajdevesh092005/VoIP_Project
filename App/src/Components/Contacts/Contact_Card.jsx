@@ -1,4 +1,4 @@
-const ContactCard = ({ name, phone, onCall }) => {
+const ContactCard = ({ name, phone, onCall, disabled = false }) => {
     return (
         <li className="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-700/50 border border-gray-200 dark:border-dark-600 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-700 hover:shadow-md transition-all duration-200">
             <div className="flex items-center space-x-4">
@@ -12,7 +12,12 @@ const ContactCard = ({ name, phone, onCall }) => {
             </div>
             <button
                 onClick={onCall}
-                className="flex items-center gap-2 bg-accent-600 hover:bg-accent-700 dark:bg-accent-500 dark:hover:bg-accent-600 text-white px-4 py-2 rounded-xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                disabled={disabled}
+                className={`flex items-center gap-2 ${
+                    disabled 
+                        ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-50' 
+                        : 'bg-accent-600 hover:bg-accent-700 dark:bg-accent-500 dark:hover:bg-accent-600 hover:shadow-lg transform hover:scale-105'
+                } text-white px-4 py-2 rounded-xl shadow-md transition-all duration-200`}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

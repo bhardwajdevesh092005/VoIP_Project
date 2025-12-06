@@ -2,6 +2,7 @@ import database from "../../db/dbService.js";
 import { ApiError } from "../../Utils/apiError.js";
 import { ApiResponse } from "../../Utils/apiResponse.js";
 import { asyncHandler } from "../../Utils/asyncHandler.js";
+import PresenceService from "../../redis/RedisInterface/WebRTC_Redis.js";
 
 export const acceptRequest = asyncHandler(async (req, res)=>{
     const requestId = req.body.requestId;
@@ -44,6 +45,17 @@ export const acceptRequest = asyncHandler(async (req, res)=>{
             }
         }
     });
+
+    // Update Redis friends list if request was accepted (status = 1)
+    if (fait === 1) {
+        try {
+            const presenceManager = new PresenceService(database.redisService.redis);
+            await presenceManager.addFriend(request.senderId, request.recieverId);
+        } catch (error) {
+            console.error("Error updating Redis friends list:", error);
+            // Don't throw error - Redis update is non-critical
+        }
+    }
 
     return res.status(200)
     .json(

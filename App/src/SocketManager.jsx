@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { io } from 'socket.io-client'
-import { setSocket, setConnected, disconnectSocket } from './Redux_Store/Slices/socketSlice.js'
+import { disconnectSocket } from './Redux_Store/Slices/socketSlice.js'
 import { useNavigate } from 'react-router-dom'
+import { registerSocketEvents, unregisterSocketEvents } from './SocketEvents/registerSocketEvents.js'
 
 const SocketManager = () => {
     const dispatch = useDispatch()
@@ -17,33 +18,13 @@ const SocketManager = () => {
                 withCredentials: true,
             })
 
-            // Listen for authentication success
-            socket.on('auth:success', (data) => {
-                console.log('Socket authenticated:', data)
-                dispatch(setSocket(socket))
-                dispatch(setConnected(true))
-            })
-
-            // Listen for authentication errors
-            socket.on('auth:error', (msg) => {
-                console.error('Socket authentication error:', msg)
-                dispatch(disconnectSocket())
-                navigate('/login')
-            })
-
-            // Listen for connection events
-            socket.on('connect', () => {
-                console.log('Socket connected:', socket.id)
-            })
-
-            socket.on('disconnect', () => {
-                console.log('Socket disconnected')
-                dispatch(setConnected(false))
-            })
+            // Register all socket event listeners
+            registerSocketEvents(socket, dispatch, navigate)
 
             // Cleanup on unmount or logout
             return () => {
                 if (socket) {
+                    unregisterSocketEvents(socket)
                     socket.disconnect()
                     dispatch(disconnectSocket())
                 }

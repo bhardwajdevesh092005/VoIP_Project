@@ -5,6 +5,7 @@ import { disconnectSocket } from '../../Redux_Store/Slices/socketSlice.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { authAPI } from '../../Utils/api.js'
+import { contactsCache } from '../../Utils/contactsCache.js'
 
 const Navbar = () => {
     const disp = useDispatch()
@@ -24,6 +25,9 @@ const Navbar = () => {
             
             // Remove access token from localStorage
             localStorage.removeItem('accessToken')
+            
+            // Clear contacts cache
+            contactsCache.clearCache()
             
             // Logout from Redux store
             disp(logout())

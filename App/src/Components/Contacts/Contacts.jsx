@@ -2,25 +2,27 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import ContactCard from './Contact_Card'
 import ContactRequestCard from './Contact_Request_Card'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { contactAPI } from '../../Utils/api'
+import { toast } from '../../Utils/toast'
+import { contactsCache } from '../../Utils/contactsCache'
+import { setCallRequest, resetCallState, setCallingUser, setCallStatus } from '../../Redux_Store/Slices/callSlce'
 
 const Contacts = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const isAuthenticated = useSelector(state => state.user.isAuth)
     const currentUserId = useSelector(state => state.user.user?.userID)
+    const socket = useSelector(state => state.socket.socket)
+    const isSocketConnected = useSelector(state => state.socket.connected)
+    const hasIncomingCall = useSelector(state => state.call.callRequest)
+    const incomingCallFrom = useSelector(state => state.call.callFrom)
+    const inCall = useSelector(state => state.call.inCall)
+    const callStatus = useSelector(state => state.call.callStatus)
     const [contacts, setContacts] = useState([])
     const [contactRequests, setContactRequests] = useState([])
     const [loading, setLoading] = useState(true)
     const [_, setRequestsLoading] = useState(false)
-
-    useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/login')
-        } else {
-            fetchContactsAndRequests()
-        }
-    }, [isAuthenticated, navigate])
 
     const fetchContactsAndRequests = async () => {
         try {
@@ -30,26 +32,42 @@ const Contacts = () => {
                 contactAPI.getContactRequests('received')
             ])
             
-            setContacts(contactsRes.data.data || [])
+            const fetchedContacts = contactsRes.data.data || []
+            setContacts(fetchedContacts)
             setContactRequests(requestsRes.data.data || [])
+            console.log(fetchedContacts);
+            // Cache contacts in localStorage
+            if (fetchedContacts.length > 0 && currentUserId) {
+                contactsCache.saveContacts(fetchedContacts, currentUserId)
+            }
         } catch (error) {
             console.error('Error fetching contacts:', error)
-            alert(error.response?.data?.message || 'Failed to load contacts')
+            toast.error(error.response?.data?.message || 'Failed to load contacts')
         } finally {
             setLoading(false)
         }
     }
 
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login')
+        } else {
+            fetchContactsAndRequests()
+        }
+        console.log(socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuthenticated, navigate])
+
     const handleAcceptRequest = async (requestId) => {
         try {
             setRequestsLoading(true)
             await contactAPI.acceptRequest(requestId, 1)
-            alert('Contact request accepted!')
+            toast.success('Contact request accepted!')
             // Refresh the lists
             await fetchContactsAndRequests()
         } catch (error) {
             console.error('Error accepting request:', error)
-            alert(error.response?.data?.message || 'Failed to accept request')
+            toast.error(error.response?.data?.message || 'Failed to accept request')
         } finally {
             setRequestsLoading(false)
         }
@@ -59,19 +77,67 @@ const Contacts = () => {
         try {
             setRequestsLoading(true)
             await contactAPI.acceptRequest(requestId, 2)
-            alert('Contact request rejected')
+            toast.success('Contact request rejected')
             // Refresh the lists
             await fetchContactsAndRequests()
         } catch (error) {
             console.error('Error rejecting request:', error)
-            alert(error.response?.data?.message || 'Failed to reject request')
+            toast.error(error.response?.data?.message || 'Failed to reject request')
         } finally {
             setRequestsLoading(false)
         }
     }
 
-    const handleCall = name => {
-        console.log('Trying to call:', name)
+    const handleCall = (contactInfo) => {
+        if (!socket || !isSocketConnected) {
+            toast.error('Not connected to server. Please refresh the page.')
+            return
+        }
+
+        if (!contactInfo || !contactInfo.userID) {
+            toast.error('Invalid contact information')
+            return
+        }
+
+        // Check if user is already in a call or has an active call status
+        if (inCall || (callStatus !== 'idle' && callStatus !== 'ended')) {
+            toast.error('You are already in a call')
+            return
+        }
+
+        // If there's an incoming call, auto-reject it first
+        if (hasIncomingCall && incomingCallFrom?.callerId) {
+            console.log('Auto-rejecting incoming call from:', incomingCallFrom.callerId)
+            socket.emit('call:response', {
+                callerId: incomingCallFrom.callerId,
+                accepted: false,
+                reason: 'User initiated another call'
+            })
+            dispatch(setCallRequest(false))
+            dispatch(resetCallState())
+        }
+
+        console.log('Initiating call to:', contactInfo.fullName)
+        
+        // Set the user being called in Redux
+        dispatch(setCallingUser({
+            userID: contactInfo.userID,
+            fullName: contactInfo.fullName,
+            email: contactInfo.email,
+            profilePicture: contactInfo.profilePicture
+        }))
+        
+        // Set call status to calling
+        dispatch(setCallStatus('calling'))
+        
+        // Emit call:initiate event with the callee's ID
+        socket.emit('call:initiate', {
+            calleeId: contactInfo.userID,
+            offer: {} // WebRTC offer will be added later
+        })
+
+        // Navigate to call screen
+        navigate('/call')
     }
 
     // Helper function to get the contact info (the other user in the request)
@@ -144,7 +210,8 @@ const Contacts = () => {
                                     key={contactRequest.requestId}
                                     name={contactInfo?.fullName || 'Unknown'}
                                     phone={contactInfo?.email || 'No email'}
-                                    onCall={() => handleCall(contactInfo?.fullName)}
+                                    onCall={() => handleCall(contactInfo)}
+                                    disabled={hasIncomingCall}
                                 />
                             )
                         })}

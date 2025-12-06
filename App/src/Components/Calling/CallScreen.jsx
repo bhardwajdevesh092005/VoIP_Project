@@ -1,39 +1,103 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router'
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion'
 import UserCard from './UserCard'
+import { setCallStatus } from '../../Redux_Store/Slices/callSlce'
 
 const CallScreen = () => {
-    const [otherUserJoined, setOtherUserJoined] = useState(false)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const callingUser = useSelector(state => state.call.callingUser)
+    const currentUser = useSelector(state => state.user.user)
+    const callStatus = useSelector(state => state.call.callStatus)
+    const socket = useSelector(state => state.socket.socket)
+    
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setOtherUserJoined(true)
-        }, 3000)
-        return () => clearTimeout(timer)
-    }, [])
+        // Redirect if no calling user data
+        if (!callingUser) {
+            navigate('/my-contacts')
+            return
+        }
+    }, [callingUser, navigate])
 
-    const user = {
-        name: 'You',
-        phone: '+918368424747',
-        img: '/profile.jpg',
+    const handleEndCall = () => {
+        if (socket) {
+            // Set call status to ended for immediate UI feedback
+            dispatch(setCallStatus('ended'))
+            
+            // Emit call:end event to server
+            // The server will respond with call:ended which will reset state and navigate
+            socket.emit('call:end', {})
+        }
+    }
+
+    if (!callingUser || !currentUser) {
+        return null
     }
 
     const otherUser = {
-        name: 'John Doe',
-        phone: '+919876543210',
-        img: '/other-profile.jpg',
+        name: callingUser.fullName || 'Unknown',
+        phone: callingUser.email || '',
+        img: callingUser.profilePicture || '/default-avatar.png',
     }
+
+    const user = {
+        name: currentUser.fullName || 'You',
+        phone: currentUser.email || '',
+        img: currentUser.profilePicture || '/default-avatar.png',
+    }
+
+    // Determine status text based on callStatus
+    const getStatusText = () => {
+        switch (callStatus) {
+            case 'calling':
+                return 'Calling...'
+            case 'ringing':
+                return 'Connecting...'
+            case 'connected':
+                return 'Connected'
+            case 'ended':
+                return 'Call Ended'
+            default:
+                return 'Calling...'
+        }
+    }
+
+    const getSubStatusText = () => {
+        switch (callStatus) {
+            case 'calling':
+                return 'Initiating call...'
+            case 'ringing':
+                return 'Establishing connection...'
+            case 'connected':
+                return 'Call in progress'
+            case 'ended':
+                return 'Call has ended'
+            default:
+                return 'Connecting...'
+        }
+    }
+
+    const isConnected = callStatus === 'connected'
 
     return (
         <div className="flex flex-col items-center justify-center h-screen px-4">
             <div className="text-center mb-10">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                    {!otherUserJoined ? 'Calling...' : 'Connected'}
+                    {getStatusText()}
                 </h1>
                 <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-400">
-                    <div className={`w-3 h-3 rounded-full ${!otherUserJoined ? 'bg-yellow-400 animate-pulse' : 'bg-accent-500'}`}></div>
+                    <div className={`w-3 h-3 rounded-full ${
+                        callStatus === 'connected' 
+                            ? 'bg-accent-500' 
+                            : callStatus === 'ringing'
+                            ? 'bg-blue-400 animate-pulse'
+                            : 'bg-yellow-400 animate-pulse'
+                    }`}></div>
                     <p className="text-sm">
-                        {!otherUserJoined ? 'Waiting for response...' : 'Call in progress'}
+                        {getSubStatusText()}
                     </p>
                 </div>
             </div>
@@ -43,10 +107,10 @@ const CallScreen = () => {
                     img={otherUser.img}
                     name={otherUser.name}
                     phone={otherUser.phone}
-                    status={!otherUserJoined ? 'Ringing...' : 'Connected'}
-                    statusColor={!otherUserJoined ? 'pulse' : 'text-accent-500 dark:text-accent-400'}
+                    status={callStatus === 'connected' ? 'Connected' : callStatus === 'ringing' ? 'Connecting...' : 'Calling...'}
+                    statusColor={callStatus === 'connected' ? 'text-accent-500 dark:text-accent-400' : 'pulse'}
                 />
-                {otherUserJoined && (
+                {isConnected && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8, y: 50 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -65,7 +129,11 @@ const CallScreen = () => {
 
             {/* Call Controls */}
             <div className="flex gap-4">
-                <button className="p-4 bg-gray-200 dark:bg-dark-700 hover:bg-gray-300 dark:hover:bg-dark-600 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200">
+                <button 
+                    className="p-4 bg-gray-200 dark:bg-dark-700 hover:bg-gray-300 dark:hover:bg-dark-600 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200"
+                    disabled={!isConnected}
+                    title="Mute"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-6 h-6 text-gray-700 dark:text-gray-300"
@@ -87,7 +155,11 @@ const CallScreen = () => {
                         />
                     </svg>
                 </button>
-                <button className="p-4 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200">
+                <button 
+                    className="p-4 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200"
+                    onClick={handleEndCall}
+                    title="End Call"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-6 h-6 text-white"
@@ -103,7 +175,11 @@ const CallScreen = () => {
                         />
                     </svg>
                 </button>
-                <button className="p-4 bg-gray-200 dark:bg-dark-700 hover:bg-gray-300 dark:hover:bg-dark-600 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200">
+                <button 
+                    className="p-4 bg-gray-200 dark:bg-dark-700 hover:bg-gray-300 dark:hover:bg-dark-600 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200"
+                    disabled={!isConnected}
+                    title="Toggle Camera"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-6 h-6 text-gray-700 dark:text-gray-300"

@@ -8,6 +8,9 @@ const initialState = {
         name: 'random',
     },
     callRequest: false,
+    callingUser: null, // User being called (outgoing call)
+    callStatus: 'idle', // 'idle' | 'calling' | 'ringing' | 'connected' | 'ended'
+    callId: null, // Current active call ID
 }
 
 const callSlice = createSlice({
@@ -29,12 +32,21 @@ const callSlice = createSlice({
         setCallRequest(state, action) {
             state.callRequest = action.payload
         },
+        setCallingUser(state, action) {
+            state.callingUser = action.payload
+        },
+        setCallStatus(state, action) {
+            state.callStatus = action.payload
+        },
+        setCallId(state, action) {
+            state.callId = action.payload
+        },
         resetCallState() {
             return initialState
         },
     },
 })
 
-export const { setInCall, setRemoteStream, setLocalStream, setCallFrom, resetCallState } =
+export const { setInCall, setRemoteStream, setLocalStream, setCallFrom, setCallRequest, setCallingUser, setCallStatus, setCallId, resetCallState } =
     callSlice.actions
 export default callSlice.reducer

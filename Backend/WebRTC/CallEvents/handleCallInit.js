@@ -26,6 +26,45 @@ export const handle_call_init = async (socket, io, data, presenceManager) => {
             return;
         }
 
+        // Check if caller already has an active call
+        const callerCurrentCall = await presenceManager.getUserCurrentCall(callerId);
+        if (callerCurrentCall) {
+            socket.emit("call:error", { 
+                message: "You are already in an active call.",
+                currentCall: callerCurrentCall.callId
+            });
+            return;
+        }
+
+        // Check if caller has a pending outgoing call request
+        const callerPendingOutgoing = await presenceManager.getPendingOutgoingCall(callerId);
+        if (callerPendingOutgoing) {
+            socket.emit("call:error", { 
+                message: "You already have a pending outgoing call. Please wait for response or cancel it.",
+                pendingCall: true
+            });
+            return;
+        }
+
+        // Check if callee already has an active call
+        const calleeCurrentCall = await presenceManager.getUserCurrentCall(calleeId);
+        if (calleeCurrentCall) {
+            socket.emit("call:error", { 
+                message: "User is currently in another call.",
+                busy: true
+            });
+            return;
+        }
+
+        // Check if there's already a pending request to this user
+        const existingRequest = await presenceManager.getCallRequest(callerId, calleeId);
+        if (existingRequest) {
+            socket.emit("call:error", { 
+                message: "Call request already sent to this user. Please wait for response."
+            });
+            return;
+        }
+
         // Verify users are friends
         const friends = await presenceManager.getAllFriends(callerId);
         if (!friends.includes(calleeId)) {
@@ -36,9 +75,8 @@ export const handle_call_init = async (socket, io, data, presenceManager) => {
         }
 
         // Parallelize all status checks to avoid race conditions
-        const [isCallerOnline, isCalleeOnline, isCallerInCall, isCalleeInCall] = await Promise.all([
+        const [isCallerOnline, isCallerInCall, isCalleeInCall] = await Promise.all([
             presenceManager.isOnline(callerId),
-            presenceManager.isOnline(calleeId),
             presenceManager.isInCall(callerId),
             presenceManager.isInCall(calleeId)
         ]);
@@ -60,14 +98,6 @@ export const handle_call_init = async (socket, io, data, presenceManager) => {
             return;
         }
 
-        // Check if callee is online
-        if (!isCalleeOnline) {
-            socket.emit("call:error", { 
-                message: "User is offline." 
-            });
-            return;
-        }
-
         // Check if callee is already in a call
         if (isCalleeInCall) {
             socket.emit("call:error", { 
@@ -77,7 +107,28 @@ export const handle_call_init = async (socket, io, data, presenceManager) => {
             return;
         }
 
-        console.log(`[Call] ${callerId} -> ${calleeId}`);
+        // Create call request in Redis
+        const callRequestId = await presenceManager.createCallRequest(callerId, calleeId, data.offer);
+        console.log(`[Call Request Created] ${callRequestId}`);
+
+        // Set 60-second timeout for call response
+        const callTimeout = setTimeout(async () => {
+            console.log(`[Call Timeout] No answer from ${calleeId}`);
+            
+            // Delete call request from Redis
+            await presenceManager.deleteCallRequest(callerId, calleeId);
+            
+            // Notify caller about no answer
+            io.to(callerId).emit("call:no-answer", {
+                calleeId
+            });
+            
+            // Clear timeout reference from socket
+            delete socket.callTimeout;
+        }, 60000); // 60 seconds
+
+        // Store timeout in socket for cleanup if needed
+        socket.callTimeout = callTimeout;
 
         // Notify the callee about the incoming call
         // Note: Caller and callee will be marked as "in-call" only after callee accepts
