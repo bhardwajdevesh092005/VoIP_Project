@@ -7,9 +7,31 @@ import callRoutes from "./routes/call.routes.js";
 import session from 'express-session'
 import passport from "./services/passport.service.js";
 const app = express();
+
+// CORS configuration
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://192.168.1.50:5173",
+    "https://localhost:5173",
+    "https://127.0.0.1:5173",
+    "https://192.168.1.50:5173"
+].filter(Boolean); // Remove undefined values
+
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: function (origin, callback) {
+            // Allow requests with no origin (like mobile apps, curl, postman)
+            if (!origin) return callback(null, true);
+            
+            if (allowedOrigins.indexOf(origin) !== -1) {
+                callback(null, true);
+            } else {
+                console.warn(`CORS blocked origin: ${origin}`);
+                callback(null, false);
+            }
+        },
         credentials: true,
     })
 );

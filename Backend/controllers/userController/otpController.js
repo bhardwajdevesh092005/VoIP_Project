@@ -14,7 +14,8 @@ const sendOtp = asyncHandler(async (req, res) => {
     // if(acc && Date.now()-acc.updatedAt.getTime()<5*60*1000){
     //     throw new ApiError(429,"Try asking for OTP after 5 minutes");
     // }
-    const otpToSend = Math.floor(100000 * Math.random());
+    const otpToSend = Math.floor(100000 + Math.random() * 900000); // Ensures 6 digits
+    console.log(otpToSend);
     const resp = await sendEmail(
         email,
         `
@@ -39,6 +40,7 @@ const sendOtp = asyncHandler(async (req, res) => {
         </div>
     `
     );
+    console.log(resp);
     const acc = await database.prismaService.prismaClientObject.otp.findUnique({
         where: {
             email: email,

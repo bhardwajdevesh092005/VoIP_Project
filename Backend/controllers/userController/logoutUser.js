@@ -20,8 +20,8 @@ export const logoutUser = asyncHandler(async (req, res) => {
     // Clear cookies
     const cookieOptions = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
+        secure: true,
+        sameSite: 'none'
     }
 
     return res

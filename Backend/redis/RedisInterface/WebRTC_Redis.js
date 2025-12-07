@@ -23,8 +23,8 @@ class PresenceService {
                             {status: 1},
                             {
                                 OR: [
-                                    {senderId: userId},
-                                    {recieverId: userId}
+                                    {senderId: Number(userId)},
+                                    {recieverId: Number(userId)}
                                 ]
                             }
                         ]

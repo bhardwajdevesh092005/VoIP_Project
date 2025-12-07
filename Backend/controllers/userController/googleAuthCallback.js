@@ -64,12 +64,13 @@ export const googleAuthCallBack = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: true,
+        sameSite: 'none',
     };
 
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
-        .redirect("http://localhost:5173");
+        .redirect("https://192.168.1.50:5173");
 
 });

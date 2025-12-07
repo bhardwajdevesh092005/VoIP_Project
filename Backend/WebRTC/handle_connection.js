@@ -64,6 +64,14 @@ export const handle_connection = async (io, socket) => {
             // Remove expiry from the call since at least one user is back
             await presenceManager.removeActiveCallExpiry(activeCall.callId);
             
+            // Notify the other user that peer is back online
+            const { callerId, calleeId } = activeCall;
+            const otherUserId = userId === callerId ? calleeId : callerId;
+            io.to(otherUserId).emit("call:peer-online", {
+                userId,
+                callId: activeCall.callId
+            });
+            
             // Emit active call state to help frontend restore
             socket.emit("call:reconnect", {
                 callId: activeCall.callId,
@@ -94,8 +102,20 @@ export const handle_connection = async (io, socket) => {
             // Mark user as offline immediately
             await presenceManager.markOffline(userId);
             
-            // If user was in a call, check if both users are now offline
+            // If user was in a call, notify the other user about disconnection
             if (currentCall) {
+                const { callerId, calleeId } = currentCall;
+                const otherUserId = userId === callerId ? calleeId : callerId;
+                
+                console.log(`[Call Disconnect] User ${userId} disconnected from call ${currentCall.callId}`);
+                
+                // Notify the other user that their peer went offline
+                io.to(otherUserId).emit("call:peer-offline", {
+                    userId,
+                    callId: currentCall.callId
+                });
+                
+                // Check if both users are now offline
                 const bothOffline = await presenceManager.areBothUsersOffline(currentCall.callId);
                 if (bothOffline) {
                     console.log(`[Call Expiry] Both users offline for call ${currentCall.callId}, setting 60s expiry`);
