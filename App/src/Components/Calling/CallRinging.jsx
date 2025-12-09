@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setCallRequest, resetCallState, setCallingUser, setCallStatus } from '../../Redux_Store/Slices/callSlce.js'
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
+import { webrtcManager } from '../../Utils/webrtc.js'
+import { toast } from '../../Utils/toast.js'
 
 const CallRinging = () => {
     const dispatch = useDispatch()
@@ -16,6 +18,10 @@ const CallRinging = () => {
         // Set 60-second timeout for incoming call
         timeoutRef.current = setTimeout(() => {
             console.log('Call timeout - no answer after 60 seconds')
+            
+            // Clean up any WebRTC resources
+            webrtcManager.close()
+            
             if (socket && caller?.callerId) {
                 socket.emit('call:response', {
                     callerId: caller.callerId,
@@ -34,34 +40,79 @@ const CallRinging = () => {
         }
     }, [caller, socket, dispatch])
 
-    const handleAccept = () => {
+    const handleAccept = async () => {
         console.log('Call accepted from:', caller.callerId)
         // Clear timeout
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current)
         }
-        // Set caller info in Redux for CallScreen
-        dispatch(setCallingUser({
-            userID: caller.callerId,
-            fullName: caller.name,
-            profilePicture: caller.img
-        }))
         
-        // Set call status to 'ringing' (connecting state for receiver)
-        dispatch(setCallStatus('ringing'))
-        
-        // TODO: Add WebRTC logic here later
-        // For now, just emit a response event
-        if (socket) {
-            socket.emit('call:response', {
-                callerId: caller.callerId,
-                accepted: true,
-                answer: {} // Will be filled with WebRTC answer later
+        try {
+            // Set caller info in Redux for CallScreen
+            dispatch(setCallingUser({
+                userID: caller.callerId,
+                fullName: caller.name,
+                profilePicture: caller.img
+            }))
+            
+            // Set call status to 'ringing' (connecting state for receiver)
+            dispatch(setCallStatus('ringing'))
+            
+            // Initialize WebRTC and create answer
+            webrtcManager.setSocket(socket)
+            const answer = await webrtcManager.createAnswer(caller.offer)
+            
+            // Set up connection state monitoring for receiver
+            webrtcManager.onConnectionStateChange((state) => {
+                console.log('Receiver connection state:', state)
+                if (state === 'connected') {
+                    console.log('Receiver WebRTC connection established')
+                    dispatch(setCallStatus('connected'))
+                } else if (state === 'disconnected' || state === 'failed') {
+                    console.log('Receiver WebRTC connection lost:', state)
+                    dispatch(setCallStatus('ended'))
+                }
             })
+            
+            // Set up remote stream handler
+            webrtcManager.onRemoteStream((stream) => {
+                console.log('Receiver received remote audio stream')
+                // Create an audio element to play the remote stream
+                const audioElement = document.getElementById('remote-audio')
+                if (audioElement) {
+                    audioElement.srcObject = stream
+                    audioElement.play().catch(err => console.error('Error playing remote audio:', err))
+                }
+            })
+            
+            // Emit response with WebRTC answer
+            if (socket) {
+                socket.emit('call:response', {
+                    callerId: caller.callerId,
+                    accepted: true,
+                    answer: answer
+                })
+            }
+            
+            dispatch(setCallRequest(false))
+            // Navigate to call screen
+            navigate('/call')
+        } catch (error) {
+            console.error('Error accepting call:', error)
+            const errorMessage = error.message || 'Failed to access microphone. Please check permissions.'
+            toast.error(errorMessage)
+            
+            // Reject the call if WebRTC setup fails
+            if (socket) {
+                socket.emit('call:response', {
+                    callerId: caller.callerId,
+                    accepted: false,
+                    reason: 'Microphone access denied'
+                })
+            }
+            dispatch(setCallRequest(false))
+            dispatch(resetCallState())
         }
-        dispatch(setCallRequest(false))
-        // Navigate to call screen
-        navigate('/call')
     }
 
     const handleReject = () => {
@@ -70,6 +121,10 @@ const CallRinging = () => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current)
         }
+        
+        // Clean up any WebRTC resources that might have been initialized
+        webrtcManager.close()
+        
         if (socket) {
             socket.emit('call:response', {
                 callerId: caller.callerId,

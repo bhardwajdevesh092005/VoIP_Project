@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import UserSearch from './UserSearch';
-import axios from 'axios';
-axios.defaults.withCredentials = true;
+import { contactAPI } from '../../Utils/api';
+
 const AddContact = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -13,15 +13,7 @@ const AddContact = () => {
     setMessage({ type: '', text: '' });
     console.log('Selected user for contact request:', user);
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'}/contact/sendRequest`,
-        { 
-            email: user.email 
-        },
-        {
-            withCredentials: true,
-        }
-      );
+      await contactAPI.sendRequest(user.email);
 
       setMessage({
         type: 'success',

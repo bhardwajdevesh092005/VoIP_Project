@@ -8,10 +8,14 @@ import {
     handleCallError,
     handleCallAccepted,
     handleCallRejected,
+    handleCallCancelled,
     handleCallNoAnswer,
     handleCallReconnect,
     handleCallRinging,
-    handleCallEnded
+    handleCallEnded,
+    handleIceCandidate,
+    handlePeerOffline,
+    handlePeerOnline
 } from './index.js'
 
 /**
@@ -35,10 +39,19 @@ export const registerSocketEvents = (socket, dispatch, navigate) => {
     socket.on('call:error', handleCallError())
     socket.on('call:accepted', handleCallAccepted(dispatch))
     socket.on('call:rejected', handleCallRejected(dispatch, navigate))
+    socket.on('call:cancelled', (data) => {
+        console.log('[registerSocketEvents] call:cancelled event received:', data)
+        handleCallCancelled(dispatch, navigate)(data)
+    })
     socket.on('call:no-answer', handleCallNoAnswer(dispatch, navigate))
     socket.on('call:reconnect', handleCallReconnect(dispatch, navigate))
     socket.on('call:ringing', handleCallRinging(dispatch))
     socket.on('call:ended', handleCallEnded(dispatch, navigate))
+    socket.on('call:peer-offline', handlePeerOffline())
+    socket.on('call:peer-online', handlePeerOnline())
+    
+    // WebRTC events
+    socket.on('ice:candidate', handleIceCandidate())
 }
 
 
@@ -59,8 +72,12 @@ export const unregisterSocketEvents = (socket) => {
     socket.off('call:error')
     socket.off('call:accepted')
     socket.off('call:rejected')
+    socket.off('call:cancelled')
     socket.off('call:no-answer')
     socket.off('call:reconnect')
     socket.off('call:ringing')
     socket.off('call:ended')
+    socket.off('call:peer-offline')
+    socket.off('call:peer-online')
+    socket.off('ice:candidate')
 }

@@ -19,8 +19,12 @@ export const handle_call_end = async (socket, io, data, presenceManager) => {
         
         console.log(`[Call End] User ${userId} ending call ${callId}`);
         
-        // End the active call in Redis
-        await presenceManager.endActiveCall(callId);
+        // End the active call in Redis and persist history if the call was connected
+        await presenceManager.endActiveCall(callId, {
+            persist: true,
+            endedBy: userId,
+            reason: "user-ended"
+        });
         
         // Mark both users as out of call
         await Promise.all([

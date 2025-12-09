@@ -38,7 +38,7 @@ export default function LoginForm() {
                 dispatch(login(response.data.data))
 
                 // Navigate to home page
-                navigate('/')
+                // navigate('/')
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please check your credentials.')
@@ -193,7 +193,7 @@ export default function LoginForm() {
 
                     <button
                         type="button"
-                        onClick={() => window.location.href = 'http://localhost:3000/api/v1/user/googleLogin'}
+                        onClick={() => window.location.href = `${import.meta.env.VITE_BACKEND_URL || 'https://192.168.1.50:3000'}/api/v1/user/googleLogin`}
                         className="flex items-center justify-center w-full py-3 border-2 border-gray-300 dark:border-dark-600 rounded-xl hover:bg-gray-50 dark:hover:bg-dark-700 transition-all duration-200 font-semibold text-gray-700 dark:text-gray-300"
                     >
                         <img src="/google.webp" alt="Google" className="w-6 h-6 mr-3" />

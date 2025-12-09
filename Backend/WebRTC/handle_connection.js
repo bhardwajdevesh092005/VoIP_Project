@@ -130,7 +130,10 @@ export const handle_connection = async (io, socket) => {
                                 const stillBothOffline = await presenceManager.areBothUsersOffline(currentCall.callId);
                                 if (stillBothOffline) {
                                     console.log(`[Call Timeout] Both users failed to reconnect, ending call ${currentCall.callId}`);
-                                    await presenceManager.endActiveCall(currentCall.callId);
+                                    await presenceManager.endActiveCall(currentCall.callId, {
+                                        persist: true,
+                                        reason: "timeout-both-offline"
+                                    });
                                     
                                     // Notify both users that call ended (in case they reconnect later)
                                     io.to(currentCall.callerId).emit("call:ended", {

@@ -7,6 +7,7 @@ import { contactAPI } from '../../Utils/api'
 import { toast } from '../../Utils/toast'
 import { contactsCache } from '../../Utils/contactsCache'
 import { setCallRequest, resetCallState, setCallingUser, setCallStatus } from '../../Redux_Store/Slices/callSlce'
+import { webrtcManager } from '../../Utils/webrtc'
 
 const Contacts = () => {
     const navigate = useNavigate()
@@ -88,7 +89,7 @@ const Contacts = () => {
         }
     }
 
-    const handleCall = (contactInfo) => {
+    const handleCall = async (contactInfo) => {
         if (!socket || !isSocketConnected) {
             toast.error('Not connected to server. Please refresh the page.')
             return
@@ -117,27 +118,38 @@ const Contacts = () => {
             dispatch(resetCallState())
         }
 
-        console.log('Initiating call to:', contactInfo.fullName)
-        
-        // Set the user being called in Redux
-        dispatch(setCallingUser({
-            userID: contactInfo.userID,
-            fullName: contactInfo.fullName,
-            email: contactInfo.email,
-            profilePicture: contactInfo.profilePicture
-        }))
-        
-        // Set call status to calling
-        dispatch(setCallStatus('calling'))
-        
-        // Emit call:initiate event with the callee's ID
-        socket.emit('call:initiate', {
-            calleeId: contactInfo.userID,
-            offer: {} // WebRTC offer will be added later
-        })
+        try {
+            console.log('Initiating call to:', contactInfo.fullName)
+            
+            // Set the user being called in Redux
+            dispatch(setCallingUser({
+                userID: contactInfo.userID,
+                fullName: contactInfo.fullName,
+                email: contactInfo.email,
+                profilePicture: contactInfo.profilePicture
+            }))
+            
+            // Set call status to calling
+            dispatch(setCallStatus('calling'))
+            
+            // Initialize WebRTC and create offer
+            webrtcManager.setSocket(socket)
+            const offer = await webrtcManager.createOffer()
+            
+            // Emit call:initiate event with the WebRTC offer
+            socket.emit('call:initiate', {
+                calleeId: contactInfo.userID,
+                offer: offer
+            })
 
-        // Navigate to call screen
-        navigate('/call')
+            // Navigate to call screen
+            navigate('/call')
+        } catch (error) {
+            console.error('Error initiating call:', error)
+            const errorMessage = error.message || 'Failed to access microphone. Please check permissions.'
+            toast.error(errorMessage)
+            dispatch(resetCallState())
+        }
     }
 
     // Helper function to get the contact info (the other user in the request)

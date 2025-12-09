@@ -6,7 +6,6 @@ import {generateAccessAndRefeshTokens} from "../../Utils/refreshAndAccessTokens.
 import {ApiResponse} from "../../Utils/apiResponse.js";
 const loginUser = asyncHandler(async (req, res) => {
     const {email, password} = req.body;
-    console.log(email,password);
     if (!(email && password)) {
         throw new ApiError(400, "Please provide both email and password");
     }
@@ -49,9 +48,10 @@ const loginUser = asyncHandler(async (req, res) => {
             },
         });
     const options = {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         httpOnly: true,
-        secure: true,
-        sameSite: 'none'
+        secure: false,
+        sameSite: 'lax'
     };
     return res
         .status(200)
@@ -121,9 +121,10 @@ const OtpLogin = asyncHandler(async (req, res) => {
             },
         });
     const options = {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         httpOnly: true,
-        secure: true,
-        sameSite: 'none'
+        secure: false,
+        sameSite: 'lax'
     };
     return res
         .status(200)

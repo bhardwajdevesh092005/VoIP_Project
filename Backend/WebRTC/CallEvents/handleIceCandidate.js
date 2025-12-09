@@ -10,6 +10,9 @@ export const handle_ice_candidate = async (socket, io, data, presenceManager) =>
             return;
         }
 
+        // Mark call as connected on first successful ICE candidate relay
+        await presenceManager.markCallConnected(currentCall.callId);
+
         const { callerId, calleeId } = currentCall;
         
         // Determine the other user in the call

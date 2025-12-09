@@ -1,7 +1,7 @@
 import { asyncHandler } from '../../Utils/asyncHandler.js'
 import { ApiResponse } from '../../Utils/apiResponse.js'
 import { ApiError } from '../../Utils/apiError.js'
-import prisma from '../../prisma/index.js'
+import database from '../../db/dbService.js'
 
 /**
  * Get call history for the authenticated user
@@ -9,10 +9,10 @@ import prisma from '../../prisma/index.js'
  * @access Private
  */
 export const getCallHistory = asyncHandler(async (req, res) => {
-    const userId = req.user.id
+    const userId = req.user.userID
 
     // Fetch call history where user is a participant
-    const callHistory = await prisma.call.findMany({
+    const callHistory = await database.prismaService.prismaClientObject.call.findMany({
         where: {
             users: {
                 some: {

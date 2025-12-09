@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL ? `${import.meta.env.VITE_BACKEND_URL}/api/v1` : 'https://192.168.1.50:3000/api/v1';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -68,7 +68,9 @@ api.interceptors.response.use(
 export const authAPI = {
   getLoginStatus: () => api.get('/user/loginStatus'),
   login: (credentials) => api.post('/user/login', credentials),
-  register: (userData) => api.post('/user/register', userData),
+  register: (formData) => api.post('/user/register', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
   logout: () => api.post('/user/logout'),
   refreshToken: () => api.get('/user/refreshToken'),
   sendOTP: (email) => api.post('/user/getOTP', { email }),
@@ -85,6 +87,7 @@ export const callAPI = {
 export const contactAPI = {
   getContacts: () => api.get('/contact/getContacts'),
   getContactRequests: (type) => api.get('/contact/getContactRequests', { params: { type } }),
+  sendRequest: (email) => api.post('/contact/sendRequest', { email }),
   acceptRequest: (requestId, accept) => api.post('/contact/decideRequest', { requestId, accept }),
   removeContact: (requestId) => api.delete(`/contact/removeContact/${requestId}`),
 };

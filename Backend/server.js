@@ -1,5 +1,6 @@
-import app from "./app.js";
 import dotenv from "dotenv";
+dotenv.config();
+import app from "./app.js";
 import http from "http";
 import https from "https";
 import fs from "fs";
@@ -8,7 +9,6 @@ import { fileURLToPath } from "url";
 import trieService from "./services/search.service.js";
 import { initServer } from './WebRTC/index.js'
 
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,6 +41,14 @@ try {
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, "0.0.0.0", () => {
+    initServer(server);
+    trieService.initialize();
+    const protocol = server instanceof https.Server ? 'https' : 'http';
+    console.log(`\n🚀 Server running on ${protocol}://0.0.0.0:${PORT}`);
+    console.log(`🌐 Local: ${protocol}://localhost:${PORT}`);
+    console.log(`🌐 Network: ${protocol}://192.168.1.50:${PORT}\n`);
+});
+server.listen(PORT, "::", () => {
     initServer(server);
     trieService.initialize();
     const protocol = server instanceof https.Server ? 'https' : 'http';
