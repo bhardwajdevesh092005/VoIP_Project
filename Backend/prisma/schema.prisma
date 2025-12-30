@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  sentRequests Request[] @relation("UserByRequest")
+  receivedRequests Request[] @relation("UserToRequest")
+  callsMade Call[] @relation("UserByCall")
+  callsReceived Call[] @relation("UserToCall")
+}
+
+model Request {
+  id        Int   @id @default(autoincrement())
+  senderId  Int
+  sender    User  @relation("UserByRequest", fields: [senderId], references: [id])
+  reciverId Int
+  reciver   User  @relation("UserToRequest", fields: [reciverId], references: [id])
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Call {
+  id       Int      @id @default(autoincrement())
+  callerId  Int
+  caller    User     @relation("UserByCall", fields: [callerId], references: [id])
+  receiverId Int
+  receiver   User    @relation("UserToCall", fields: [receiverId], references: [id])
+  callStartedAt DateTime @default(now())
+  callEndedAt   DateTime?
+}
